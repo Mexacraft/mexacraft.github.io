@@ -79,26 +79,6 @@ h1 { font-size:55px; letter-spacing:2px; }
     transform:translateY(-3px);
 }
 
-/* 🔥 DISCORD CARD NUEVO */
-#discordPreview {
-    position:fixed;
-    top:50%;
-    right:50px;
-    transform:translateY(-50%);
-    width:140px;
-    height:140px;
-    padding:20px;
-    border-radius:20px;
-    background:rgba(255,255,255,0.08);
-    border:1px solid rgba(255,255,255,0.2);
-    backdrop-filter:blur(10px);
-    opacity:0;
-    pointer-events:none;
-    transition:0.3s;
-    box-shadow:0 0 25px rgba(0,0,0,0.6);
-    object-fit:contain;
-}
-
 /* BOX SERVERS */
 .server-box {
     margin-top:40px;
@@ -183,10 +163,6 @@ h1 { font-size:55px; letter-spacing:2px; }
 
 <audio id="hoverSound" src="https://www.myinstants.com/media/sounds/minecraft-click.mp3"></audio>
 
-<!-- 🔥 DISCORD CARD -->
-<img id="discordPreview"
-src="https://toppng.com/public/uploads/preview/discord-logo-01-discord-logo-11562849833clsolz2mbc.png">
-
 <div class="container">
 
 <img class="logo" src="https://cdn.discordapp.com/icons/1426092940786270262/33c66ed784f44d2a4dce0721827ad388.png?size=2048">
@@ -195,7 +171,7 @@ src="https://toppng.com/public/uploads/preview/discord-logo-01-discord-logo-1156
 <p class="sub">Servidor con experiencias únicas y comunidad activa</p>
 
 <div class="botones">
-<div class="boton discordBtn" onclick="window.open('https://discord.gg/8RDbZZAAb3')">Discord</div>
+<div class="boton" onclick="window.open('https://discord.gg/8RDbZZAAb3')">Discord</div>
 <div class="boton" onclick="window.open('https://mexacraft.tebex.io/')">Tienda</div>
 </div>
 
@@ -253,20 +229,6 @@ sound.play();
 
 document.querySelectorAll(".boton,.server-item,.card").forEach(el=>{
 el.addEventListener("mouseenter",play);
-});
-
-/* hover discord preview */
-const btn=document.querySelector(".discordBtn");
-const preview=document.getElementById("discordPreview");
-
-btn.addEventListener("mouseenter",()=>{
-preview.style.opacity="1";
-preview.style.transform="translateY(-50%) scale(1.05)";
-});
-
-btn.addEventListener("mouseleave",()=>{
-preview.style.opacity="0";
-preview.style.transform="translateY(-50%) scale(1)";
 });
 
 /* estado server */
