@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mexacraft - Servidor Oficial</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    color:white;
+    overflow-x:hidden;
+}
+
+/* FONDO DINÁMICO */
+body::before {
+    content:"";
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:linear-gradient(270deg,#0f2027,#203a43,#2c5364,#1c1c1c);
+    background-size:600% 600%;
+    animation:gradientMove 12s ease infinite;
+    z-index:-1;
+}
+
+@keyframes gradientMove {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+}
+
+/* CONTENIDO */
+.container {
+    text-align:center;
+    padding:80px 20px;
+}
+
+h1 { font-size:50px; }
+.sub { color:#bbb; }
+
+/* BOTONES */
+.botones { margin-top:30px; }
+
+.boton {
+    display:inline-block;
+    margin:10px;
+    padding:12px 25px;
+    border-radius:30px;
+    background:rgba(255,255,255,0.1);
+    backdrop-filter:blur(5px);
+    border:1px solid rgba(255,255,255,0.2);
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.boton:hover {
+    background:white;
+    color:black;
+    transform:translateY(-3px);
+}
+
+/* SERVER BOX */
+.server-box {
+    margin-top:40px;
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.server-item {
+    padding:20px;
+    border-radius:15px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.15);
+    width:220px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.server-item:hover {
+    transform:translateY(-5px);
+    background:rgba(255,255,255,0.2);
+}
+
+.server-item span {
+    display:block;
+    font-size:12px;
+    color:#aaa;
+}
+
+/* ESTADO SERVER */
+.estado {
+    margin-top:25px;
+    display:inline-block;
+    padding:15px 25px;
+    border-radius:12px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.15);
+    color:#ddd;
+}
+
+/* MODALIDADES */
+.modalidades { margin-top:80px; }
+
+.cards {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:20px;
+}
+
+.card {
+    width:250px;
+    padding:25px;
+    border-radius:15px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.15);
+    transition:0.3s;
+}
+
+.card:hover {
+    transform:translateY(-8px);
+    background:rgba(255,255,255,0.2);
+}
+
+/* TOAST */
+.toast {
+    position:fixed;
+    bottom:30px;
+    left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:rgba(255,255,255,0.1);
+    backdrop-filter:blur(6px);
+    border:1px solid rgba(255,255,255,0.2);
+    padding:12px 25px;
+    border-radius:30px;
+    opacity:0;
+    transition:0.4s;
+}
+
+.toast.show {
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+}
+</style>
+</head>
+<body>
+
+<!-- AUDIO -->
+<audio id="hoverSound" src="https://www.myinstants.com/media/sounds/minecraft-click.mp3"></audio>
+
+<div class="container">
+<h1>MEXACRAFT</h1>
+<p class="sub">Servidor con experiencias únicas y comunidad activa</p>
+
+<div class="botones">
+<div class="boton" onclick="window.open('https://discord.gg/8RDbZZAAb3')">Discord</div>
+<div class="boton" onclick="window.open('https://mexacraft.tebex.io/')">Tienda</div>
+</div>
+
+<div class="server-box">
+<div class="server-item" onclick="copiar('mc.mexacraft.com')">
+<span>IP</span>
+<strong>mc.mexacraft.com</strong>
+</div>
+
+<div class="server-item" onclick="copiar('25565')">
+<span>Puerto</span>
+<strong>25565</strong>
+</div>
+</div>
+
+<div id="estadoServidor" class="estado">
+Cargando estado del servidor...
+</div>
+
+<div class="modalidades">
+<h2>Modalidades</h2>
+
+<div class="cards">
+<div class="card">Survival OP</div>
+<div class="card">BedWars</div>
+<div class="card">Survival Custom</div>
+<div class="card">Survival Vanilla</div>
+<div class="card">UHC</div>
+</div>
+</div>
+
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast">✔ Copiado al portapapeles</div>
+
+<script>
+/* COPIAR */
+function copiar(texto){
+navigator.clipboard.writeText(texto);
+
+let toast = document.getElementById("toast");
+toast.classList.add("show");
+
+setTimeout(() => {
+    toast.classList.remove("show");
+}, 2000);
+}
+
+/* SONIDO CORREGIDO */
+const hoverSound = document.getElementById("hoverSound");
+let audioActivado = false;
+
+/* ACTIVAR AUDIO CON PRIMER CLICK */
+document.addEventListener("click", () => {
+    audioActivado = true;
+}, { once: true });
+
+function playSound(){
+    if(!audioActivado) return;
+
+    hoverSound.currentTime = 0;
+    hoverSound.volume = 0.15;
+    hoverSound.play();
+}
+
+/* HOVER + CLICK UX */
+document.querySelectorAll('.boton, .server-item, .card').forEach(el => {
+    el.addEventListener('mouseenter', playSound);
+    el.addEventListener('click', playSound);
+});
+
+/* API ESTADO SERVIDOR */
+async function estadoServidor(){
+    try{
+        let res = await fetch("https://api.mcsrvstat.us/2/mc.mexacraft.com");
+        let data = await res.json();
+
+        let estado = document.getElementById("estadoServidor");
+
+        if(data.online){
+            estado.innerHTML = `
+            🟢 Online<br>
+            👥 ${data.players.online} / ${data.players.max} jugadores
+            `;
+        } else {
+            estado.innerHTML = "🔴 Servidor offline";
+        }
+
+    } catch {
+        document.getElementById("estadoServidor").innerHTML = "⚠️ Error al cargar";
+    }
+}
+
+estadoServidor();
+setInterval(estadoServidor, 30000);
+</script>
+
+</body>
+</html>
