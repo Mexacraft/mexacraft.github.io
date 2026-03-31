@@ -79,19 +79,24 @@ h1 { font-size:55px; letter-spacing:2px; }
     transform:translateY(-3px);
 }
 
-/* DISCORD PREVIEW */
+/* 🔥 DISCORD CARD NUEVO */
 #discordPreview {
     position:fixed;
     top:50%;
-    right:80px;
+    right:50px;
     transform:translateY(-50%);
-    width:220px;
-    border-radius:15px;
+    width:140px;
+    height:140px;
+    padding:20px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.2);
+    backdrop-filter:blur(10px);
     opacity:0;
     pointer-events:none;
     transition:0.3s;
     box-shadow:0 0 25px rgba(0,0,0,0.6);
-    z-index:10;
+    object-fit:contain;
 }
 
 /* BOX SERVERS */
@@ -178,7 +183,7 @@ h1 { font-size:55px; letter-spacing:2px; }
 
 <audio id="hoverSound" src="https://www.myinstants.com/media/sounds/minecraft-click.mp3"></audio>
 
-<!-- 🔥 NUEVO LOGO HOVER DISCORD -->
+<!-- 🔥 DISCORD CARD -->
 <img id="discordPreview"
 src="https://toppng.com/public/uploads/preview/discord-logo-01-discord-logo-11562849833clsolz2mbc.png">
 
