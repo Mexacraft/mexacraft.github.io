@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <title>Mexacraft - Servidor Oficial</title>
 
+<!-- FAVICON -->
+<link rel="icon" type="image/png" href="https://cdn.discordapp.com/icons/1426092940786270262/33c66ed784f44d2a4dce0721827ad388.png?size=128">
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
 
 <style>
@@ -32,6 +35,22 @@ body::before {
     100% {background-position:0% 50%;}
 }
 
+/* LOGO */
+.logo {
+    width:120px;
+    height:120px;
+    border-radius:20px;
+    margin-bottom:20px;
+    box-shadow:0 0 20px rgba(0,0,0,0.5);
+    transition:0.3s;
+}
+
+.logo:hover {
+    transform:scale(1.05);
+    filter:drop-shadow(0 0 12px white);
+}
+
+/* CONTENIDO */
 .container {
     text-align:center;
     padding:80px 20px;
@@ -91,7 +110,7 @@ h1 { font-size:55px; letter-spacing:2px; }
     color:#aaa;
 }
 
-/* ESTADO SERVER PRO */
+/* ESTADO SERVER */
 .estado {
     margin-top:25px;
     display:inline-block;
@@ -100,22 +119,6 @@ h1 { font-size:55px; letter-spacing:2px; }
     background:rgba(255,255,255,0.08);
     border:1px solid rgba(255,255,255,0.15);
     min-width:260px;
-}
-
-.bar {
-    width:100%;
-    height:10px;
-    background:rgba(255,255,255,0.1);
-    border-radius:10px;
-    margin-top:10px;
-    overflow:hidden;
-}
-
-.bar-fill {
-    height:100%;
-    width:0%;
-    background:#00ff88;
-    transition:0.5s;
 }
 
 /* MODALIDADES */
@@ -167,9 +170,14 @@ h1 { font-size:55px; letter-spacing:2px; }
 
 <body>
 
+<!-- AUDIO -->
 <audio id="hoverSound" src="https://www.myinstants.com/media/sounds/minecraft-click.mp3"></audio>
 
 <div class="container">
+
+<!-- LOGO -->
+<img class="logo" src="https://cdn.discordapp.com/icons/1426092940786270262/33c66ed784f44d2a4dce0721827ad388.png?size=2048">
+
 <h1>MEXACRAFT</h1>
 <p class="sub">Servidor con experiencias únicas y comunidad activa</p>
 
@@ -192,9 +200,6 @@ h1 { font-size:55px; letter-spacing:2px; }
 
 <div id="estadoServidor" class="estado">
 Cargando servidor...
-<div class="bar">
-<div id="barFill" class="bar-fill"></div>
-</div>
 </div>
 
 <div class="modalidades">
@@ -211,55 +216,52 @@ Cargando servidor...
 
 </div>
 
+<!-- TOAST -->
 <div id="toast" class="toast">✔ Copiado</div>
 
 <script>
 
+/* COPIAR */
 function copiar(texto){
 navigator.clipboard.writeText(texto);
+
 let toast=document.getElementById("toast");
 toast.classList.add("show");
+
 setTimeout(()=>toast.classList.remove("show"),2000);
 }
 
 /* SONIDO */
 const sound=document.getElementById("hoverSound");
-let ok=false;
+let activated=false;
 
-document.addEventListener("click",()=>ok=true,{once:true});
+document.addEventListener("click",()=>activated=true,{once:true});
 
-function play(){
-if(!ok) return;
+function playSound(){
+if(!activated) return;
 sound.currentTime=0;
 sound.volume=0.1;
 sound.play();
 }
 
-document.querySelectorAll(".boton,.server-item,.card").forEach(e=>{
-e.addEventListener("mouseenter",play);
-e.addEventListener("click",play);
+document.querySelectorAll(".boton,.server-item,.card").forEach(el=>{
+el.addEventListener("mouseenter",playSound);
+el.addEventListener("click",playSound);
 });
 
-/* SERVER STATUS PRO */
+/* SERVER STATUS */
 async function estado(){
 try{
 let res=await fetch("https://api.mcsrvstat.us/2/mc.mexacraft.com");
 let data=await res.json();
 
 let box=document.getElementById("estadoServidor");
-let bar=document.getElementById("barFill");
 
 if(data.online){
-let pct=(data.players.online/data.players.max)*100;
-
 box.innerHTML=`
 🟢 Online<br>
 👥 ${data.players.online}/${data.players.max} jugadores
-<div class="bar"><div id="barFill" class="bar-fill"></div></div>
 `;
-
-document.getElementById("barFill").style.width=pct+"%";
-
 }else{
 box.innerHTML="🔴 Servidor offline";
 }
