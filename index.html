@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Mexacraft - Servidor Oficial</title>
 
-<!-- FAVICON -->
 <link rel="icon" type="image/png" href="https://cdn.discordapp.com/icons/1426092940786270262/33c66ed784f44d2a4dce0721827ad388.png?size=128">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
@@ -72,12 +71,29 @@ h1 { font-size:55px; letter-spacing:2px; }
     border:1px solid rgba(255,255,255,0.2);
     cursor:pointer;
     transition:0.3s;
+    position:relative;
+    z-index:2;
 }
 
 .boton:hover {
     background:white;
     color:black;
     transform:translateY(-3px);
+}
+
+/* PREVIEW DISCORD */
+#discordPreview {
+    position:fixed;
+    top:50%;
+    right:80px;
+    transform:translateY(-50%);
+    width:200px;
+    border-radius:15px;
+    opacity:0;
+    pointer-events:none;
+    transition:0.3s;
+    box-shadow:0 0 25px rgba(0,0,0,0.6);
+    z-index:10;
 }
 
 /* SERVER BOX */
@@ -104,13 +120,7 @@ h1 { font-size:55px; letter-spacing:2px; }
     background:rgba(255,255,255,0.2);
 }
 
-.server-item span {
-    display:block;
-    font-size:12px;
-    color:#aaa;
-}
-
-/* ESTADO SERVER */
+/* ESTADO */
 .estado {
     margin-top:25px;
     display:inline-block;
@@ -118,7 +128,6 @@ h1 { font-size:55px; letter-spacing:2px; }
     border-radius:15px;
     background:rgba(255,255,255,0.08);
     border:1px solid rgba(255,255,255,0.15);
-    min-width:260px;
 }
 
 /* MODALIDADES */
@@ -138,7 +147,6 @@ h1 { font-size:55px; letter-spacing:2px; }
     background:rgba(255,255,255,0.08);
     border:1px solid rgba(255,255,255,0.15);
     transition:0.3s;
-    cursor:pointer;
 }
 
 .card:hover {
@@ -173,16 +181,18 @@ h1 { font-size:55px; letter-spacing:2px; }
 <!-- AUDIO -->
 <audio id="hoverSound" src="https://www.myinstants.com/media/sounds/minecraft-click.mp3"></audio>
 
+<!-- PREVIEW DISCORD -->
+<img id="discordPreview" src="https://cdn.discordapp.com/icons/1426092940786270262/33c66ed784f44d2a4dce0721827ad388.png?size=512">
+
 <div class="container">
 
-<!-- LOGO -->
 <img class="logo" src="https://cdn.discordapp.com/icons/1426092940786270262/33c66ed784f44d2a4dce0721827ad388.png?size=2048">
 
 <h1>MEXACRAFT</h1>
 <p class="sub">Servidor con experiencias únicas y comunidad activa</p>
 
 <div class="botones">
-<div class="boton" onclick="window.open('https://discord.gg/8RDbZZAAb3')">Discord</div>
+<div class="boton discordBtn" onclick="window.open('https://discord.gg/8RDbZZAAb3')">Discord</div>
 <div class="boton" onclick="window.open('https://mexacraft.tebex.io/')">Tienda</div>
 </div>
 
@@ -216,7 +226,6 @@ Cargando servidor...
 
 </div>
 
-<!-- TOAST -->
 <div id="toast" class="toast">✔ Copiado</div>
 
 <script>
@@ -224,29 +233,41 @@ Cargando servidor...
 /* COPIAR */
 function copiar(texto){
 navigator.clipboard.writeText(texto);
-
 let toast=document.getElementById("toast");
 toast.classList.add("show");
-
 setTimeout(()=>toast.classList.remove("show"),2000);
 }
 
 /* SONIDO */
 const sound=document.getElementById("hoverSound");
-let activated=false;
+let ok=false;
 
-document.addEventListener("click",()=>activated=true,{once:true});
+document.addEventListener("click",()=>ok=true,{once:true});
 
-function playSound(){
-if(!activated) return;
+function play(){
+if(!ok) return;
 sound.currentTime=0;
 sound.volume=0.1;
 sound.play();
 }
 
-document.querySelectorAll(".boton,.server-item,.card").forEach(el=>{
-el.addEventListener("mouseenter",playSound);
-el.addEventListener("click",playSound);
+document.querySelectorAll(".boton,.server-item,.card").forEach(e=>{
+e.addEventListener("mouseenter",play);
+e.addEventListener("click",play);
+});
+
+/* PREVIEW DISCORD HOVER */
+const discordBtn=document.querySelector(".discordBtn");
+const preview=document.getElementById("discordPreview");
+
+discordBtn.addEventListener("mouseenter",()=>{
+preview.style.opacity="1";
+preview.style.transform="translateY(-50%) scale(1.05)";
+});
+
+discordBtn.addEventListener("mouseleave",()=>{
+preview.style.opacity="0";
+preview.style.transform="translateY(-50%) scale(1)";
 });
 
 /* SERVER STATUS */
@@ -258,10 +279,7 @@ let data=await res.json();
 let box=document.getElementById("estadoServidor");
 
 if(data.online){
-box.innerHTML=`
-🟢 Online<br>
-👥 ${data.players.online}/${data.players.max} jugadores
-`;
+box.innerHTML=`🟢 Online<br>👥 ${data.players.online}/${data.players.max} jugadores`;
 }else{
 box.innerHTML="🔴 Servidor offline";
 }
