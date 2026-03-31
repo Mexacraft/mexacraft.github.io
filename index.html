@@ -14,7 +14,7 @@ body {
     overflow-x:hidden;
 }
 
-/* FONDO DINÁMICO */
+/* FONDO */
 body::before {
     content:"";
     position:fixed;
@@ -32,13 +32,12 @@ body::before {
     100% {background-position:0% 50%;}
 }
 
-/* CONTENIDO */
 .container {
     text-align:center;
     padding:80px 20px;
 }
 
-h1 { font-size:50px; }
+h1 { font-size:55px; letter-spacing:2px; }
 .sub { color:#bbb; }
 
 /* BOTONES */
@@ -92,15 +91,31 @@ h1 { font-size:50px; }
     color:#aaa;
 }
 
-/* ESTADO SERVER */
+/* ESTADO SERVER PRO */
 .estado {
     margin-top:25px;
     display:inline-block;
-    padding:15px 25px;
-    border-radius:12px;
+    padding:20px;
+    border-radius:15px;
     background:rgba(255,255,255,0.08);
     border:1px solid rgba(255,255,255,0.15);
-    color:#ddd;
+    min-width:260px;
+}
+
+.bar {
+    width:100%;
+    height:10px;
+    background:rgba(255,255,255,0.1);
+    border-radius:10px;
+    margin-top:10px;
+    overflow:hidden;
+}
+
+.bar-fill {
+    height:100%;
+    width:0%;
+    background:#00ff88;
+    transition:0.5s;
 }
 
 /* MODALIDADES */
@@ -114,17 +129,18 @@ h1 { font-size:50px; }
 }
 
 .card {
-    width:250px;
-    padding:25px;
-    border-radius:15px;
+    width:260px;
+    padding:30px;
+    border-radius:18px;
     background:rgba(255,255,255,0.08);
     border:1px solid rgba(255,255,255,0.15);
     transition:0.3s;
+    cursor:pointer;
 }
 
 .card:hover {
-    transform:translateY(-8px);
-    background:rgba(255,255,255,0.2);
+    transform:translateY(-10px) scale(1.03);
+    background:rgba(255,255,255,0.18);
 }
 
 /* TOAST */
@@ -148,9 +164,9 @@ h1 { font-size:50px; }
 }
 </style>
 </head>
+
 <body>
 
-<!-- AUDIO -->
 <audio id="hoverSound" src="https://www.myinstants.com/media/sounds/minecraft-click.mp3"></audio>
 
 <div class="container">
@@ -175,7 +191,10 @@ h1 { font-size:50px; }
 </div>
 
 <div id="estadoServidor" class="estado">
-Cargando estado del servidor...
+Cargando servidor...
+<div class="bar">
+<div id="barFill" class="bar-fill"></div>
+</div>
 </div>
 
 <div class="modalidades">
@@ -192,69 +211,67 @@ Cargando estado del servidor...
 
 </div>
 
-<!-- TOAST -->
-<div id="toast" class="toast">✔ Copiado al portapapeles</div>
+<div id="toast" class="toast">✔ Copiado</div>
 
 <script>
-/* COPIAR */
+
 function copiar(texto){
 navigator.clipboard.writeText(texto);
-
-let toast = document.getElementById("toast");
+let toast=document.getElementById("toast");
 toast.classList.add("show");
-
-setTimeout(() => {
-    toast.classList.remove("show");
-}, 2000);
+setTimeout(()=>toast.classList.remove("show"),2000);
 }
 
-/* SONIDO CORREGIDO */
-const hoverSound = document.getElementById("hoverSound");
-let audioActivado = false;
+/* SONIDO */
+const sound=document.getElementById("hoverSound");
+let ok=false;
 
-/* ACTIVAR AUDIO CON PRIMER CLICK */
-document.addEventListener("click", () => {
-    audioActivado = true;
-}, { once: true });
+document.addEventListener("click",()=>ok=true,{once:true});
 
-function playSound(){
-    if(!audioActivado) return;
-
-    hoverSound.currentTime = 0;
-    hoverSound.volume = 0.15;
-    hoverSound.play();
+function play(){
+if(!ok) return;
+sound.currentTime=0;
+sound.volume=0.1;
+sound.play();
 }
 
-/* HOVER + CLICK UX */
-document.querySelectorAll('.boton, .server-item, .card').forEach(el => {
-    el.addEventListener('mouseenter', playSound);
-    el.addEventListener('click', playSound);
+document.querySelectorAll(".boton,.server-item,.card").forEach(e=>{
+e.addEventListener("mouseenter",play);
+e.addEventListener("click",play);
 });
 
-/* API ESTADO SERVIDOR */
-async function estadoServidor(){
-    try{
-        let res = await fetch("https://api.mcsrvstat.us/2/mc.mexacraft.com");
-        let data = await res.json();
+/* SERVER STATUS PRO */
+async function estado(){
+try{
+let res=await fetch("https://api.mcsrvstat.us/2/mc.mexacraft.com");
+let data=await res.json();
 
-        let estado = document.getElementById("estadoServidor");
+let box=document.getElementById("estadoServidor");
+let bar=document.getElementById("barFill");
 
-        if(data.online){
-            estado.innerHTML = `
-            🟢 Online<br>
-            👥 ${data.players.online} / ${data.players.max} jugadores
-            `;
-        } else {
-            estado.innerHTML = "🔴 Servidor offline";
-        }
+if(data.online){
+let pct=(data.players.online/data.players.max)*100;
 
-    } catch {
-        document.getElementById("estadoServidor").innerHTML = "⚠️ Error al cargar";
-    }
+box.innerHTML=`
+🟢 Online<br>
+👥 ${data.players.online}/${data.players.max} jugadores
+<div class="bar"><div id="barFill" class="bar-fill"></div></div>
+`;
+
+document.getElementById("barFill").style.width=pct+"%";
+
+}else{
+box.innerHTML="🔴 Servidor offline";
 }
 
-estadoServidor();
-setInterval(estadoServidor, 30000);
+}catch{
+document.getElementById("estadoServidor").innerHTML="⚠ Error servidor";
+}
+}
+
+estado();
+setInterval(estado,30000);
+
 </script>
 
 </body>
