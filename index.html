@@ -16,7 +16,7 @@ body {
     overflow-x:hidden;
 }
 
-/* FONDO */
+/* FONDO ANIMADO */
 body::before {
     content:"";
     position:fixed;
@@ -71,8 +71,6 @@ h1 { font-size:55px; letter-spacing:2px; }
     border:1px solid rgba(255,255,255,0.2);
     cursor:pointer;
     transition:0.3s;
-    position:relative;
-    z-index:2;
 }
 
 .boton:hover {
@@ -81,7 +79,7 @@ h1 { font-size:55px; letter-spacing:2px; }
     transform:translateY(-3px);
 }
 
-/* PREVIEW DISCORD */
+/* DISCORD PREVIEW */
 #discordPreview {
     position:fixed;
     top:50%;
@@ -96,7 +94,7 @@ h1 { font-size:55px; letter-spacing:2px; }
     z-index:10;
 }
 
-/* SERVER BOX */
+/* BOX SERVERS */
 .server-box {
     margin-top:40px;
     display:flex;
@@ -159,7 +157,7 @@ h1 { font-size:55px; letter-spacing:2px; }
     position:fixed;
     bottom:30px;
     left:50%;
-    transform:translateX(-50%) translateY(20px);
+    transform:translateX(-50%);
     background:rgba(255,255,255,0.1);
     backdrop-filter:blur(6px);
     border:1px solid rgba(255,255,255,0.2);
@@ -171,18 +169,18 @@ h1 { font-size:55px; letter-spacing:2px; }
 
 .toast.show {
     opacity:1;
-    transform:translateX(-50%) translateY(0);
+    transform:translateX(-50%) translateY(-10px);
 }
 </style>
 </head>
 
 <body>
 
-<!-- AUDIO -->
 <audio id="hoverSound" src="https://www.myinstants.com/media/sounds/minecraft-click.mp3"></audio>
 
-<!-- PREVIEW DISCORD (IMAGEN NUEVA) -->
-<img id="discordPreview" src="https://i.pinimg.com/474x/52/fd/0c/52fd0ca64986b84c254726406cee5b6a.jpg?nii=t">
+<!-- 🔥 NUEVO LOGO HOVER DISCORD -->
+<img id="discordPreview"
+src="https://toppng.com/public/uploads/preview/discord-logo-01-discord-logo-11562849833clsolz2mbc.png">
 
 <div class="container">
 
@@ -198,13 +196,11 @@ h1 { font-size:55px; letter-spacing:2px; }
 
 <div class="server-box">
 <div class="server-item" onclick="copiar('mc.mexacraft.com')">
-<span>IP</span>
-<strong>mc.mexacraft.com</strong>
+<strong>IP</strong><br>mc.mexacraft.com
 </div>
 
 <div class="server-item" onclick="copiar('25565')">
-<span>Puerto</span>
-<strong>25565</strong>
+<strong>Puerto</strong><br>25565
 </div>
 </div>
 
@@ -230,47 +226,45 @@ Cargando servidor...
 
 <script>
 
-/* COPIAR */
 function copiar(texto){
 navigator.clipboard.writeText(texto);
-let toast=document.getElementById("toast");
-toast.classList.add("show");
-setTimeout(()=>toast.classList.remove("show"),2000);
+let t=document.getElementById("toast");
+t.classList.add("show");
+setTimeout(()=>t.classList.remove("show"),2000);
 }
 
-/* SONIDO */
+/* sonido hover */
 const sound=document.getElementById("hoverSound");
-let ok=false;
+let ready=false;
 
-document.addEventListener("click",()=>ok=true,{once:true});
+document.addEventListener("click",()=>ready=true,{once:true});
 
 function play(){
-if(!ok) return;
+if(!ready) return;
 sound.currentTime=0;
 sound.volume=0.1;
 sound.play();
 }
 
-document.querySelectorAll(".boton,.server-item,.card").forEach(e=>{
-e.addEventListener("mouseenter",play);
-e.addEventListener("click",play);
+document.querySelectorAll(".boton,.server-item,.card").forEach(el=>{
+el.addEventListener("mouseenter",play);
 });
 
-/* HOVER DISCORD PREVIEW */
-const discordBtn=document.querySelector(".discordBtn");
+/* hover discord preview */
+const btn=document.querySelector(".discordBtn");
 const preview=document.getElementById("discordPreview");
 
-discordBtn.addEventListener("mouseenter",()=>{
+btn.addEventListener("mouseenter",()=>{
 preview.style.opacity="1";
 preview.style.transform="translateY(-50%) scale(1.05)";
 });
 
-discordBtn.addEventListener("mouseleave",()=>{
+btn.addEventListener("mouseleave",()=>{
 preview.style.opacity="0";
 preview.style.transform="translateY(-50%) scale(1)";
 });
 
-/* SERVER STATUS */
+/* estado server */
 async function estado(){
 try{
 let res=await fetch("https://api.mcsrvstat.us/2/mc.mexacraft.com");
@@ -278,14 +272,12 @@ let data=await res.json();
 
 let box=document.getElementById("estadoServidor");
 
-if(data.online){
-box.innerHTML=`🟢 Online<br>👥 ${data.players.online}/${data.players.max} jugadores`;
-}else{
-box.innerHTML="🔴 Servidor offline";
-}
+box.innerHTML = data.online
+? `🟢 Online<br>👥 ${data.players.online}/${data.players.max} jugadores`
+: "🔴 Offline";
 
 }catch{
-document.getElementById("estadoServidor").innerHTML="⚠ Error servidor";
+document.getElementById("estadoServidor").innerHTML="⚠ Error";
 }
 }
 
